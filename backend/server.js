@@ -17,6 +17,24 @@ mongoose
 app.use(express.json());
 app.use(cors());
 
+// define a schema for the step addition result
+const stepSchema = new mongoose.Schema({
+  stepNumber: {
+    type: Number,
+    required: true,
+  },
+  carryString: {
+    type: String,
+    required: true,
+  },
+  sumString: {
+    type: String,
+    required: true,
+  },
+});
+
+// define a model for the step addition result
+const Step = mongoose.model('Step', stepSchema);
 // Route
 app.post("/addition", (req, res) => {
   const { num1, num2 } = req.body;
@@ -28,6 +46,7 @@ app.post("/addition", (req, res) => {
   let carry = 0;
   let result = {};
 
+
   for (let i = 1; i <= Math.max(num1.length, num2.length); i++) {
     let digit1 = parseInt(num1[num1.length - i]) || 0;
     let digit2 = parseInt(num2[num2.length - i]) || 0;
@@ -38,7 +57,7 @@ app.post("/addition", (req, res) => {
     if (sum >= 10) {
       carry = 1;
       carryString = i === 1 ? "1_" : "1";
-      sumString = sum.toString().substr(1);
+      sumString = sum.toString().slice(1);
     } else {
       carry = 0;
       carryString = i === 1 ? "" : "_";
@@ -48,7 +67,6 @@ app.post("/addition", (req, res) => {
       carryString, sumString
     };
   }
-
   res.json(result);
 });
 
